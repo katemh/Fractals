@@ -18,6 +18,8 @@ public:
     float abs() const;                      //return absolute value
     float mag() const;                      //return magnitude^2
 
+    void print() const;
+
     //----------------------------------------------------- immutable opeartors
     //these functions return the result of addition/multiplication of one
     //Complex number w/another Complex number (or a scalar)

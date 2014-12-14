@@ -1,12 +1,13 @@
 #include "mandelbrot.h"
 #include "complex.h"
+#include <iostream>
 
 const int ESCAPE_RADIUS = 2;        //escape radius
 const float WINDOW_WIDTH = 640;     //in pixels
 const float WINDOW_HEIGHT = 400;    //in pixels
 
-Mandelbrot::Mandelbrot() : cx(WINDOW_WIDTH / 2), cy(WINDOW_HEIGHT / 2),
-    scale(0.02f), limit(ESCAPE_RADIUS)
+Mandelbrot::Mandelbrot() : cx(-1), cy(0),
+    scale(0.02f), limit(ESCAPE_RADIUS), scan(false)
 {
     //intentionally left blank
 } //end constructor
@@ -28,9 +29,10 @@ void Mandelbrot::init()
 {
     //create window
     window.create(sf::VideoMode(WINDOW_WIDTH, WINDOW_HEIGHT), "Mandelbrot Set");
+    window.setFramerateLimit(60);
 
     //initialize view and viewport with default center and scale values
-    view.setCenter(cx, cy);
+    view.setCenter(WINDOW_WIDTH / 2, WINDOW_HEIGHT / 2);
     view.setSize(WINDOW_WIDTH, WINDOW_HEIGHT);
     view.setViewport(sf::FloatRect(0, 0, 1.f, 1.f));
 
@@ -61,7 +63,8 @@ void Mandelbrot::processEvents()
            if(sf::Mouse::isButtonPressed(sf::Mouse::Left)) {
               mouse_update.x = event.mouseMove.x - mouse_position.x;
               mouse_update.y = event.mouseMove.y - mouse_position.y;
-              view.move(mouse_update);
+              scanBy = sf::Vector2f(mouse_update.x, mouse_update.y);
+              scan = true;
            }
        }
        case sf::Event::KeyPressed: {
@@ -82,25 +85,26 @@ void Mandelbrot::processEvents()
 void Mandelbrot::render()
 {
     window.clear(sf::Color().White);
-    int it = 0;
+    if (scan) {
+        view.move(scanBy);
+    }
     for (int x = -WINDOW_WIDTH / 2; x < WINDOW_WIDTH / 2; ++x) {
         for (int y = -WINDOW_HEIGHT; y < WINDOW_HEIGHT / 2; ++y) {
             //find mathematical (actual) value of this pixel at (x, y)
-            float ax = (cx + x) * scale;
-            float ay = (cy + y) * scale;
-            Complex z(ax, ay);
-            Complex c = z;
+            float ax = cx + (x * scale);
+            float ay = cy + (y * scale);
+            Complex c(ax, ay);  //the complex number
+            Complex z(0, 0);
+            int iter = 0;
             do {
                 z*=z;
                 z+=c;
-                ++it;
-            } while(z.mag() < (limit*limit) && it < 255);
+                ++iter;
+            } while(z.mag() < (limit*limit) && iter < 255);
 
-            if (it > 255) {
-                pixels.append(sf::Vertex(sf::Vector2f(x + (WINDOW_WIDTH / 2),
+            pixels.append(sf::Vertex(sf::Vector2f(x + (WINDOW_WIDTH / 2),
                                                   y + (WINDOW_HEIGHT / 2)),
-                                         sf::Color().Black));
-            }
+                                     sf::Color(0, 0, 0, iter)));
         }
     }
     window.draw(pixels);

@@ -1,4 +1,5 @@
 #include "complex.h"
+#include <iostream>
 #include <cmath>
 
 //===================================================== constructor, destructor
@@ -67,6 +68,26 @@ float Complex::abs() const
 float Complex::mag() const
 {
     return (x*x + iy*iy);
+}
+
+void Complex::print() const
+{
+    std::cout << "z = ";
+    if (x == 0 && iy == 0) {
+        std::cout << 0 << std::endl;
+    }
+    else if (x == 0) {
+        std::cout << iy << "i\n";
+    }
+    else if (iy == 0) {
+        std::cout << x << std::endl;
+    }
+    else if (iy < 0){
+        std::cout << x << " - " << -iy << "i\n";
+    }
+    else {
+        std::cout << x << " + " << iy << "i\n";
+    }
 }
 
 //========================================================= immutable operators
