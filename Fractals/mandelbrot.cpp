@@ -96,7 +96,11 @@ void Mandelbrot::render()
                 ++it;
             } while(z.mag() < (limit*limit) && it < 255);
 
-            pixels.append(sf::Vertex(sf::Vector2f(x, y), sf::Color(0,0,0,it)));
+            if (it > 255) {
+                pixels.append(sf::Vertex(sf::Vector2f(x + (WINDOW_WIDTH / 2),
+                                                  y + (WINDOW_HEIGHT / 2)),
+                                         sf::Color().Black));
+            }
         }
     }
     window.draw(pixels);
