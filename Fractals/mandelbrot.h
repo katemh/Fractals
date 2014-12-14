@@ -9,13 +9,21 @@ class Mandelbrot
 public:
     Mandelbrot();
     ~Mandelbrot();
-
+    void run();
 
 private:
-    float cx, cy;   //center x and iy coordinates
-    float scale;    //scale factor
-    const float limit;    //limit used to determine if c belongs to Mandelbrot set
+    int cx, cy;       //center x and iy coordinates
+    float scale;        //scale factor
+    const int limit;    //limit used to determine if c belongs to Mandelbrot set
+    sf::RenderWindow window;
+    sf::View view;
     sf::VertexArray pixels;
+
+    void init();
+    void processEvents();
+    void render();
+
+    void setCenter(sf::Vector2i new_center);
 };
 
 #endif // MANDELBROT_H
