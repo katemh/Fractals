@@ -64,33 +64,38 @@ float Complex::abs() const
     return (hypotf(x, iy));
 } //end abs
 
+float Complex::mag() const
+{
+    return (x*x + iy*iy);
+}
+
 //========================================================= immutable operators
 //immutable operators return the result of the operator as a new Complex;
 //the values of the variables on either side of the operator remain constant
 
 //returns new Complex number that is the sum of c1 + c2
-Complex& operator +(Complex& c1, Complex& c2) const
+Complex& operator +(Complex& c1, Complex& c2)
 {
     //(a + bi) + (c + di) = (a + c) + (b + d)i
     float real = c1.x + c2.x;
     float imag = c1.iy + c2.iy;
-    return (new Complex(real, imag));
+    return *(new Complex(real, imag));
 } //end operator +
 
 //returns new Complex number that is the product of c1 * c2
-Complex& operator *(Complex& c1, Complex& c2) const
+Complex& operator *(Complex& c1, Complex& c2)
 {
     //(a + bi)*(c + di) = ac + (ad + bc)i + (i*i)(bd) = (ac - bd) + (ad + bc)i
-    float real = (c1.rx * c2.rx) - (c1.iy * c2.iy);
-    float imag = (c1.rx * c2.iy) + (c1.iy * c2.rx);
-    return (new Complex(real, imag));
+    float real = (c1.x * c2.x) - (c1.iy * c2.iy);
+    float imag = (c1.x * c2.iy) + (c1.iy * c2.x);
+    return *(new Complex(real, imag));
 } //end operator *
 
 //returns new Complex number that is the product of c1 * scalar
-Complex& operator *(Complex& c1, const float scalar) const
+Complex& operator *(Complex& c1, const float scalar)
 {
     //scalar multiplication: n(a + bi) = an + (bn)i
     float real = c1.x * scalar;
     float imag = c1.iy * scalar;
-    return (new Complex(real, imag));
+    return *(new Complex(real, imag));
 } //end operator *

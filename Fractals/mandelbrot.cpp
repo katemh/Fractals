@@ -20,7 +20,6 @@ void Mandelbrot::run() {
     init();
     while (window.isOpen()) {
         processEvents();
-        update();
         render();
     }
 }
@@ -35,6 +34,8 @@ void Mandelbrot::init()
     view.setSize(WINDOW_WIDTH, WINDOW_HEIGHT);
     view.setViewport(sf::FloatRect(0, 0, 1.f, 1.f));
 
+    window.setView(view);
+
     pixels.setPrimitiveType(sf::PrimitiveType::Points);
 
 } //end init
@@ -44,10 +45,10 @@ void Mandelbrot::processEvents()
     sf::Vector2i mouse_position = sf::Mouse::getPosition(window);
     sf::Vector2f mouse_update;
     sf::Event event;
-    while(window->pollEvent(event)) {
+    while(window.pollEvent(event)) {
        switch(event.type) {
        case sf::Event::Closed:
-           window->close();
+           window.close();
            break;
        case sf::Event::MouseButtonPressed: {
            if(event.mouseButton.button == sf::Mouse::Left) {
@@ -80,20 +81,24 @@ void Mandelbrot::processEvents()
 
 void Mandelbrot::render()
 {
-    for (float x = 0.f; x < 640.f; ++x) {
-        for (float y = 0.f; y < 400.f; ++y) {
-            //"mathematical" value of this pixel? as a complex number
-            Complex value((centerX + x) * scale, (centerY + y) * scale);
-            int count = 0;  //count iterations of loop
-            Complex temp = value;
+    window.clear(sf::Color().White);
+    int it = 0;
+    for (int x = -WINDOW_WIDTH / 2; x < WINDOW_WIDTH / 2; ++x) {
+        for (int y = -WINDOW_HEIGHT; y < WINDOW_HEIGHT / 2; ++y) {
+            //find mathematical (actual) value of this pixel at (x, y)
+            float ax = (cx + x) * scale;
+            float ay = (cy + y) * scale;
+            Complex z(ax, ay);
+            Complex c = z;
             do {
-                temp = temp^2 + value;  //Fc(x) = x^2 + c, Fc(Fc(x)) = ...
-                value1 = value2;
-                ++i;
-            } while (i <= 255 && ((a1 * a1) + (b1 * b1) < limit));
+                z*=z;
+                z+=c;
+                ++it;
+            } while(z.mag() < (limit*limit) && it < 255);
 
-            sf::Vertex pixel(sf::Vector2f(x, y), sf::Color(0, 0, 0, i));
-            pixels.append(pixel);
+            pixels.append(sf::Vertex(sf::Vector2f(x, y), sf::Color(0,0,0,it)));
         }
     }
+    window.draw(pixels);
+    window.display();
 }

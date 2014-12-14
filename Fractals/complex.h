@@ -15,14 +15,15 @@ public:
     void operator += (Complex& other);      //add   (this + other); return
     void operator *=(Complex& other);       //mult. (this * other); return
     void operator *=(const float scalar);   //mult. (scalar*this); return
-    float abs() const;                      //return absolute value (magnitude)
+    float abs() const;                      //return absolute value
+    float mag() const;                      //return magnitude^2
 
     //----------------------------------------------------- immutable opeartors
     //these functions return the result of addition/multiplication of one
     //Complex number w/another Complex number (or a scalar)
-    friend Complex& operator +(Complex& c1, Complex& c2) const; //(+) add
-    friend Complex& operator *(Complex& c1, Complex& c2) const; //(*) multiply
-    friend Complex& operator *(Complex& c1, float scalar) const;//(*) scale
+    friend Complex& operator +(Complex& c1, Complex& c2); //(+) add
+    friend Complex& operator *(Complex& c1, Complex& c2); //(*) multiply
+    friend Complex& operator *(Complex& c1, float scalar);//(*) scale
 
 
 

@@ -11,6 +11,8 @@ SOURCES += main.cpp \
 include(deployment.pri)
 qtcAddDeployment()
 
+LIBS += -L"/usr/local/lib"
+
 CONFIG(release, debug|release): LIBS += -lsfml-audio -lsfml-graphics -lsfml-system -lsfml-network -lsfml-window
 CONFIG(debug, debug|release): LIBS += -lsfml-audio -lsfml-graphics -lsfml-system -lsfml-network -lsfml-window
 
